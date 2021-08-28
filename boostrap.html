@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>QUAN TRẮC KHÔNG KHÍ</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src='https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming@1.9.0"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.3/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-analytics.js"></script>
+
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyAICs2XQUqD6nQTahBLOBCcDdusrJmVJx0",
+    authDomain: "chatluongkhongkhi-e5ffe.firebaseapp.com",
+    projectId: "chatluongkhongkhi-e5ffe",
+    storageBucket: "chatluongkhongkhi-e5ffe.appspot.com",
+    messagingSenderId: "1035951190611",
+    appId: "1:1035951190611:web:fbae99a5eb8d3fccde4ca6",
+    measurementId: "G-GH19MPEMND"
+  };
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
+
+  <script language="javascript" src="js/chart.js"></script>
+  <script language="javascript" src="js/main.js"></script>
+  <script language="javascript" src="js/aqi.js"></script>
+  <script src="https://smtpjs.com/v3/smtp.js"></script>
+</head>
+
+<body style="background-image: linear-gradient(rgb(220, 238, 248),rgb(200, 250, 250));">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12"
+        style="background-color: #a1c0f8; color: white; text-align: center; font-size: 50px;display: flex; justify-content: center;border-radius: 10px">
+        <p>GIÁM SÁT CHẤT LƯỢNG KHÔNG KHÍ IUH</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-3">
+    <div class="row">
+      <div class="col-sm-12 pull-right" >
+        <img  onclick="saveData()" src="image/json.png" class="float-right" data-placement="left" data-toggle="tooltip" title="Lưu cở sở dưc liệu dạng file JSON!" style="width: 50px;height: 40px;">
+        <img  src="image/chuong.png" onclick="checkmail()" class="float-right" data-placement="left" data-toggle="tooltip" title="Nhận thông báo chất lượng không khí!" style="width: 60px;height: 40px;">
+        <form autocomplete="off" class="float-right">
+          <input type="text" id="textemail" class="form-control" placeholder="jane.doe@example.com">
+      </form>
+      </div>
+    </div>
+  </div>
+  <div class="container mt-3">
+    <div class="row">
+      <div class="col-sm-6" style="border-radius: 10px">
+        <button type="button" class="btn btn-danger" onclick="bieudo()">PM<sub>2.5</sub></button>
+        <button type="button" class="btn btn-primary" onclick="bieudo1()">PM<sub>10</sub></button>
+        <button type="button" class="btn btn-success" onclick="bieudo2()">CO</button>
+        <button type="button" class="btn btn-warning" onclick="bieudo3()">CO2</button>
+        <div class="chart-container"
+          style="background-color: white;border-radius: 10px; position: relative; width: auto; height: 320px;">
+          <canvas id="myChart"></canvas>
+          <canvas id="myChart1"></canvas>
+          <canvas id="myChart2"></canvas>
+          <canvas id="myChart3"></canvas>
+          <br>
+          <br>
+          <br>
+        </div>
+        <hr class="d-sm-none">
+      </div>
+      <div class="col-sm-6">
+        <h3>Chất lượng không khí hiện tại <a onclick="aqitong()">giờ<a>|<a onclick="aqingay()">ngày<a></a></h3>
+        <div class="row" id="mau" style="border-radius: 10px;">
+          <div class="col-sm-3 my-auto" style="text-align: center;">
+            <div id="text11">
+              <img name="image" style="border-radius: 10px;width:130px;height:130px;" src="image/1.PNG" alt="">
+            </div>
+            <hr class="d-sm-none">
+          </div>
+          <div class="col-sm-3 my-auto">
+            <div id="text12"
+              style="font-size: 8ch;text-align: center; flex-direction: column; display: flex; justify-content: center; ">
+              <p id="aqit"></p>
+            </div>
+            <hr class="d-sm-none">
+          </div>
+          <div class="col-sm-3 my-auto">
+            <div
+              style="font-size: 5ch;text-align: center; flex-direction: column-reverse; display: flex; justify-content: center;">
+              <p id="dg"></p>
+            </div>
+            <hr class="d-sm-none">
+          </div>
+          <div class="col-sm-3 my-auto" >
+            <h5>Chất gây ô nhiễm chính: </h5>
+            <p id="cgon"></p>
+            <hr class="d-sm-none">
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-12 my-auto">
+            <h5>Dự báo chất lượng không khí</h5>
+          </div>
+        </div>
+        <div class="row" style="text-align: center; border-top: none;border-left: none;border-right: none;background-color: white;border-top-left-radius: 10px;border-top-right-radius: 10px;border-bottom-right-radius: 10px;border-bottom-left-radius: 10px;">
+          <div class="col-sm-3 my-auto" >
+              <p id="ngay0"></p>
+              <p id="db0"></p>
+              <p id="check0"></p>
+          </div>
+          <div class="col-sm-3 my-auto" style="border-left: 1px solid  rgb(199, 198, 198);">
+              <p id="ngay1"></p>
+              <p id="db1"></p>
+              <p id="check1"></p>
+          </div>
+          <div class="col-sm-3 my-auto" style="border-left: 1px solid  rgb(199, 198, 198);">
+            <p id="ngay2"></p>
+            <p id="db2"></p>
+            <p id="check2"></p>
+          </div>
+          <div class="col-sm-3 my-auto" style="border-left: 1px solid  rgb(199, 198, 198);">
+            <p id="ngay3"></p>
+            <p id="db3"></p>
+            <p id="check3"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container mt-3">
+    <div class="row">
+      <div class="col-sm-7">
+        <h4>Chất gây ô nhiễm </h4>
+      </div>
+      <div class="col-sm-5">
+        <h4>Khuyến nghị về sức khoẻ </h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-7">
+        <div class="row"
+        style="border-top: none;border-left: none;border-right: none;border-top-left-radius: 10px;border-top-right-radius: 10px;background-color: white;">
+        <div class="col-sm-6"
+          style="border-right: 1px solid  rgb(199, 198, 198);border-bottom: 1px solid  rgb(199, 198, 198)">
+          <h6 style="text-align: center;">PM<sub>2.5</sub> (Chất dạng hạt dưới 2.5 micron) </h6>
+          <div class="row">
+            <div class="col-sm-2" style="font-size: 3ch;text-align: center;flex-direction: column; display: flex; justify-content: center;">
+              <p id="aqipm25"></p>
+            </div>
+            <div class="col-sm-6 my-auto">
+              <p><b>Nồng độ:</b>&nbsp;<a id="p1"></a>&nbsp;μg/m3</p>
+              <p><b>Đánh giá:</b>&nbsp;<a id="d1"></a></p>
+            </div>
+            <div class="col-sm-4 my-auto">
+              <p><b>Min:</b>&nbsp;<a id="minpm25"></a></p>
+              <p><b>Max:</b>&nbsp;<a id="maxpm25"></a></p>
+            </div>
+            <hr class="d-sm-none">
+          </div>
+        </div>
+        <div class="col-sm-6" style="border-bottom: 1px solid  rgb(199, 198, 198)">
+          <h6 style="text-align: center;">PM<sub>10</sub> (Chất dạng hạt dưới 10 micron) </h6>
+          <div class="row">
+            <div class="col-sm-2"
+              style="font-size: 3ch;text-align: center; flex-direction: column; display: flex; justify-content: center; ">
+              <p id="aqipm10"></p>
+            </div>
+            <div class="col-sm-6 my-auto">
+              <p><b>Nồng độ:</b>&nbsp;<a id="p2"></a>&nbsp;μg/m3</p>
+              <p><b>Đánh giá:</b>&nbsp;<a id="d2"></a></p>
+            </div>
+            <div class="col-sm-4 my-auto">
+              <p><b>Min:</b>&nbsp;<a id="minpm10"></a></p>
+              <p><b>Max:</b>&nbsp;<a id="maxpm10"></a></p>
+            </div>
+            <hr class="d-sm-none">
+          </div>
+        </div>
+        </div>
+
+        <div class="row"
+          style="border-bottom: none;border-left: none;border-right: none;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;background-color: white;">
+          <div class="col-sm-6" style="border-right: 1px solid rgb(199, 198, 198);">
+            <h6 style="text-align: center;">CO (Carbon Monoxide)</h6>
+            <div class="row">
+              <div class="col-sm-2"
+                style="font-size: 3ch;text-align: center; flex-direction: column; display: flex; justify-content: center; ">
+                <p id="aqico"></p>
+              </div>
+              <div class="col-sm-6 my-auto">
+                <p><b>Nồng độ:</b>&nbsp;<a id="p3"></a>&nbsp;ppm</p>
+              <p><b>Đánh giá:</b>&nbsp;<a id="d3"></a></p>
+              </div>
+              <div class="col-sm-4 my-auto">
+                <p><b>Min:</b>&nbsp;<a id="minco"></a></p>
+              <p><b>Max:</b>&nbsp;<a id="maxco"></a></p>
+              </div>
+              <hr class="d-sm-none">
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <h6 style="text-align: center;">CO<sub>2</sub> (Carbon Dioxide)</h6>
+            <div class="row">
+              <div class="col-sm-1">
+              </div>
+              <div class="col-sm-6 my-auto">
+                <p><b>Nồng độ:</b>&nbsp;<a id="p4"></a>&nbsp;ppm</p>
+              </div>
+              <div class="col-sm-4 my-auto">
+                <p><b>Min:</b>&nbsp;<a id="minco2"></a></p>
+              <p><b>Max:</b>&nbsp;<a id="maxco2"></a></p>
+              </div>
+              <hr class="d-sm-none">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <div class="row">
+          <div class="col-sm-3"  style="text-align: center; border-radius: 10px; height: 150px;">
+            <div id="text11">
+              <img id="bt0" name="image0" onclick="tt0()" style="border-radius: 10px;" src="" alt="">
+            </div>
+          </div>
+          <div class="col-sm-3" style="text-align: center; border-radius: 10px; height: 150px;">
+            <div id="text11">
+              <img id="bt1" onclick="tt1()" name="image1"  style="border-radius: 10px;" src="" alt="">
+            </div>
+          </div>
+          <div class="col-sm-3" style="text-align: center; border-radius: 10px; height: 150px;">
+            <div id="text11">
+              <img id="bt2" onclick="tt2()" name="image2" style="border-radius: 10px;" src="" alt="">
+            </div>
+          </div>
+          <div class="col-sm-3 my-auto" style="text-align: center; border-radius: 10px; height: 150px;">
+            <div id="text11">
+              <img id="bt3" name="image3" onclick="tt3()" style="border-radius: 10px;" src="" alt="">
+            </div>
+          </div>
+        </div>
+        <div class="row mt-1">
+          <div class="col-sm-12 my-auto" style="font-size: 3ch;text-align: center;">
+            <p id="textKN" style="border-radius: 10px;"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container mt-3">
+    <div class="row" style=" text-align: center;flex-direction: column; display: flex; justify-content: center;color: antiquewhite;">
+      <div class="col-sm-12" style="background-color: #a1c0f8; border-top-left-radius:10px; border-top-right-radius:10px; ">
+        <p class="mt-4">Design by PAK - LTBT</p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
